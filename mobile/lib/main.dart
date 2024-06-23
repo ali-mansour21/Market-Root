@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Market Root',
       routes: {'/': (context) => SplashScreen()},
+      debugShowCheckedModeBanner: false,
     );
   }
 }

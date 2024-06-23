@@ -23,10 +23,10 @@ class OnboardingWidget extends StatelessWidget {
           imagePath,
           height: 200,
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
