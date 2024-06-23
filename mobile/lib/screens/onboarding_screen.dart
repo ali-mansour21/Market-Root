@@ -75,15 +75,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   title: data['title']!,
                   description: data['description']!,
                   onGetStarted: _onGetStarted,
+                  currentPage: _currentPage,
+                  totalPageCount: _onboardingData.length,
                 );
               },
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              _onboardingData.length,
-              (index) => buildDot(index, context),
             ),
           ),
           const SizedBox(height: 20),

@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Market Root',
-      routes: {'/': (context) => SplashScreen()},
+      routes: {'/': (context) => const SplashScreen()},
       debugShowCheckedModeBanner: false,
     );
   }
