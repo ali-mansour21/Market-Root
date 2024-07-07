@@ -1,82 +1,90 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile/widgets/custom_navigation_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 200,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/Home.jpg'),
-                fit: BoxFit.cover,
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/Home.jpg'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          // Category Section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GridView.count(
-              crossAxisCount: 4,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                CategoryItem(
-                    title: 'Handmade', image: 'assets/categories/Handmade.png'),
-                CategoryItem(
-                    title: 'Flowers', image: 'assets/categories/Flowers.png'),
-                CategoryItem(
-                    title: 'Personal Care',
-                    image: 'assets/categories/Personal_Care.png'),
-                CategoryItem(
-                    title: 'Bakery', image: 'assets/categories/Bakery.png'),
-                CategoryItem(
-                    title: 'Sweets', image: 'assets/categories/Sweets.png'),
-                CategoryItem(
-                    title: 'Kitchens', image: 'assets/categories/Kitchens.png'),
-                CategoryItem(title: 'Gifts', image: 'assets/Gifts.png'),
-                CategoryItem(
-                    title: 'View All', image: 'assets/categories/View_All.png'),
-              ],
+            const SizedBox(height: 16),
+            // Category Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GridView.count(
+                crossAxisCount: 4,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: const [
+                  CategoryItem(
+                      title: 'Handmade',
+                      image: 'assets/categories/Handmade.png'),
+                  CategoryItem(
+                      title: 'Flowers', image: 'assets/categories/Flowers.png'),
+                  CategoryItem(
+                      title: 'Personal Care',
+                      image: 'assets/categories/Personal_Care.png'),
+                  CategoryItem(
+                      title: 'Bakery', image: 'assets/categories/Bakery.png'),
+                  CategoryItem(
+                      title: 'Sweets', image: 'assets/categories/Sweets.png'),
+                  CategoryItem(
+                      title: 'Kitchens',
+                      image: 'assets/categories/Kitchens.png'),
+                  CategoryItem(title: 'Gifts', image: 'assets/Gifts.png'),
+                  CategoryItem(
+                      title: 'View All',
+                      image: 'assets/categories/View_All.png'),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          // Market Section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Now in Market Root!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text('View All'),
-                ),
-              ],
+            const SizedBox(height: 16),
+            // Market Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Now in Market Root!',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('View All'),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 150,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: const [
-                MarketItem(image: 'assets/market_item1.png'),
-                MarketItem(image: 'assets/market_item2.png'),
-                MarketItem(image: 'assets/market_item3.png'),
-              ],
+            SizedBox(
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: const [
+                  MarketItem(image: 'assets/market_item1.png'),
+                  MarketItem(image: 'assets/market_item2.png'),
+                  MarketItem(image: 'assets/market_item3.png'),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 }
