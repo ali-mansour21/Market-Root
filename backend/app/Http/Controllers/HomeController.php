@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $data = Category::with('vendors')->get();
+        $data = Category::with('vendors.products')->get();
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     public function searchVendorByName(Request $request)
