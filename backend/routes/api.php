@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\customer\CustomerController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProdcutController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('user', [CustomerController::class, 'index']);
+Route::post('vendor', [CustomerController::class, 'vendor']);
+Route::post('product', [ProdcutController::class, 'index']);
+Route::get('home', [HomeController::class, 'index']);
+Route::post('home/search',[HomeController::class, 'searchVendorByName']);
