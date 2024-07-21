@@ -6,6 +6,7 @@ import 'package:mobile/utilities/configure.dart';
 import 'package:mobile/widgets/category_item.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,153 +16,170 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final bool _showWelcomePopup = true;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_showWelcomePopup) {
-        _showWelcomeDialog();
-      }
-    });
+    _checkWelcomeDialog();
+  }
+
+  Future<void> _checkWelcomeDialog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isWelcomeDialogShown = prefs.getBool('isWelcomeDialogShown');
+    if (isWelcomeDialogShown == null || !isWelcomeDialogShown) {
+      _showWelcomeDialog();
+      prefs.setBool('isWelcomeDialogShown', true);
+    }
   }
 
   void _showWelcomeDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          insetPadding: const EdgeInsets.all(12.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'Welcome to MarketRootapp!',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+    Future.delayed(Duration.zero, () {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            insetPadding: const EdgeInsets.all(12.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Welcome to MarketRootapp!',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Row(
+                        children: [
+                          Icon(Icons.delivery_dining),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Delivery',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1E1E24)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Select our Pick Up & Get Items at your home. Service and experience the advantage of never waiting for business owner recall.',
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(height: 16),
+                      const Row(
+                        children: [
+                          Icon(Icons.card_giftcard),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Save money and earn rewards',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1E1E24)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'The more you order the more money you save by unlocking exclusive lifetime discounts and rewards from all your favourite coffee brands.',
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(height: 16),
+                      const Row(
+                        children: [
+                          Icon(Icons.edit),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Customise your order',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1E1E24)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Choose your desired shop, browse the menu and customize your order exactly the way you want it.',
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const Row(
-                      children: [
-                        Icon(Icons.delivery_dining),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Delivery',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1E1E24)),
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                              backgroundColor: Colors.teal),
+                          child: const Text(
+                            'Got It!',
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Select our Pick Up & Get Items at your home. Service and experience the advantage of never waiting for business owner recall.',
-                      textAlign: TextAlign.left,
-                    ),
-                    const SizedBox(height: 16),
-                    const Row(
-                      children: [
-                        Icon(Icons.card_giftcard),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Save money and earn rewards',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1E1E24)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'The more you order the more money you save by unlocking exclusive lifetime discounts and rewards from all your favourite coffee brands.',
-                      textAlign: TextAlign.left,
-                    ),
-                    const SizedBox(height: 16),
-                    const Row(
-                      children: [
-                        Icon(Icons.edit),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Customise your order',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1E1E24)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Choose your desired shop, browse the menu and customize your order exactly the way you want it.',
-                      textAlign: TextAlign.left,
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
+                      ),
+                      TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                            ),
-                            backgroundColor: Colors.teal),
                         child: const Text(
-                          'Got It!',
-                          style: TextStyle(color: Colors.white),
+                          'Sign up now',
+                          style: TextStyle(color: Colors.teal),
                         ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        'Sign up now',
-                        style: TextStyle(color: Colors.teal),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+              ],
+            ),
+          );
+        },
+      );
+    });
+
+    Future.delayed(const Duration(seconds: 5), () {
+      Navigator.of(context).pop();
+    });
+  }
+
+  void _onNavItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -219,8 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const AllCategoriesScreen(),
+                                builder: (context) => AllCategoriesScreen(),
                               ),
                             );
                           },
@@ -265,7 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomNavigationBar(
+        currentIndex: _selectedIndex,
+        onItemSelected: _onNavItemSelected,
+      ),
     );
   }
 }

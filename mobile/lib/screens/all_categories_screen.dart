@@ -4,8 +4,39 @@ import 'package:provider/provider.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/widgets/category_item_large.dart';
 
-class AllCategoriesScreen extends StatelessWidget {
+class AllCategoriesScreen extends StatefulWidget {
   const AllCategoriesScreen({super.key});
+
+  @override
+  _AllCategoriesScreenState createState() => _AllCategoriesScreenState();
+}
+
+class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
+  int _selectedIndex = 1;
+
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/help');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/orders');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/account');
+        break;
+      default:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +94,10 @@ class AllCategoriesScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),
+      bottomNavigationBar: CustomNavigationBar(
+        currentIndex: _selectedIndex,
+        onItemSelected: _onItemSelected,
+      ),
     );
   }
 }
