@@ -10,6 +10,7 @@ class DataService {
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body)['data'];
+      print(data);
       return data.map((item) => Category.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load data');

@@ -27,11 +27,11 @@ class HomeController extends Controller
         $vendor = Cache::get($cacheKey);
 
         if (!$vendor) {
-            $vendor = Vendor::where('name', 'LIKE', '%' . $name . '%')->get();
+            $vendor = Vendor::where('name', 'LIKE', '%' . $name . '%')->with('products')->get();
 
             Cache::put($cacheKey, $vendor, 60);
         }
 
-        return response()->json($vendor);
+        return response()->json(['data' => $vendor]);
     }
 }

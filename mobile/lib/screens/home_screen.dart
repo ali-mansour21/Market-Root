@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:mobile/providers/data_provider.dart';
+import 'package:mobile/services/data_service.dart';
+import 'package:mobile/utilities/configure.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -161,6 +164,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categories = Provider.of<DataProvider>(context).categories;
+
+    final vendors = categories
+        .skip(1)
+        .expand((category) => category.vendors)
+        .take(3)
+        .toList();
+
     return Scaffold(
       body: Column(
         children: [
@@ -168,9 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 28,
-                  ),
+                  const SizedBox(height: 28),
                   Container(
                     width: double.infinity,
                     height: 200,
@@ -182,43 +191,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Wrap(
                       spacing: 10.0,
                       runSpacing: 10.0,
                       children: [
-                        CategoryItem(
-                          title: 'Handmade',
-                          image: 'assets/categories/Handmade.jpg',
-                        ),
-                        CategoryItem(
-                          title: 'Flowers',
-                          image: 'assets/categories/Flowers.jpg',
-                        ),
-                        CategoryItem(
-                          title: 'Personal Care',
-                          image: 'assets/categories/Personal_Care.jpg',
-                        ),
-                        CategoryItem(
-                          title: 'Bakery',
-                          image: 'assets/categories/Bakery.jpg',
-                        ),
-                        CategoryItem(
-                          title: 'Sweets',
-                          image: 'assets/categories/Sweets.jpg',
-                        ),
-                        CategoryItem(
-                          title: 'Kitchens',
-                          image: 'assets/categories/Kitchens.jpg',
-                        ),
-                        CategoryItem(
-                          title: 'Gifts',
-                          image: 'assets/categories/Gifts.jpg',
-                        ),
+                        ...categories.skip(1).map((category) => CategoryItem(
+                              title: category.title,
+                              image: 'assets/categories/${category.title}.jpg',
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VendorsScreen(
+                                        categoryId: category.categoryId),
+                                  ),
+                                );
+                              },
+                            )),
                         CategoryItem(
                           title: 'View All',
                           image: 'assets/categories/View_All.jpg',
+                          onTap: () {},
                         ),
                       ],
                     ),
@@ -249,8 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 150,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: const [
-                      ],
+                      children: vendors
+                          .map((vendor) => MarketItem(vendor: vendor))
+                          .toList(),
                     ),
                   ),
                 ],
@@ -268,59 +264,84 @@ class CategoryItem extends StatelessWidget {
   final String title;
   final String image;
   final bool isCircular;
+  final VoidCallback onTap;
 
   const CategoryItem({
     super.key,
     required this.title,
     required this.image,
     this.isCircular = true,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 70,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(image),
-                fit: BoxFit.cover,
+    return InkWell(
+      onTap: onTap,
+      child: SizedBox(
+        width: 70,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(image),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 11),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class MarketItem extends StatelessWidget {
-  final String image;
+  final Vendor vendor;
 
-  const MarketItem({super.key, required this.image});
+  const MarketItem({super.key, required this.vendor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      width: 100,
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      width: 130,
+      height: 130,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(image),
-          fit: BoxFit.cover,
+          image: NetworkImage(
+              '$IMAGE_BASE_URL${vendor.logo}'), // Assuming you have the logos in assets/vendors
+          fit: BoxFit.fill,
         ),
         borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+}
+
+class VendorsScreen extends StatelessWidget {
+  final int categoryId;
+
+  const VendorsScreen({super.key, required this.categoryId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Vendors'),
+      ),
+      body: Center(
+        child: Text('Vendors for category $categoryId'),
       ),
     );
   }
