@@ -10,7 +10,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _showWelcomePopup = true;
+  final bool _showWelcomePopup = true;
 
   @override
   void initState() {
@@ -250,10 +250,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: const [
-                        // Uncomment and use these when market items are available
-                        // MarketItem(image: 'assets/market_items/market_item1.png'),
-                        // MarketItem(image: 'assets/market_items/market_item2.png'),
-                        // MarketItem(image: 'assets/market_items/market_item3.png'),
                       ],
                     ),
                   ),
