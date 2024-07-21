@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
+import 'package:mobile/screens/all_categories_screen.dart';
 import 'package:mobile/services/data_service.dart';
 import 'package:mobile/utilities/configure.dart';
+import 'package:mobile/widgets/category_item.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -213,7 +215,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         CategoryItem(
                           title: 'View All',
                           image: 'assets/categories/View_All.jpg',
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const AllCategoriesScreen(),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -256,52 +266,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(),
-    );
-  }
-}
-
-class CategoryItem extends StatelessWidget {
-  final String title;
-  final String image;
-  final bool isCircular;
-  final VoidCallback onTap;
-
-  const CategoryItem({
-    super.key,
-    required this.title,
-    required this.image,
-    this.isCircular = true,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: SizedBox(
-        width: 70,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 11),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
