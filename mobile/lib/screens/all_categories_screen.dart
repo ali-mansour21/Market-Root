@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/category_vendor_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/providers/data_provider.dart';
@@ -78,13 +79,20 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                 const SizedBox(height: 16),
                 Wrap(
                   spacing: 10.0,
-                  runSpacing: 20.0, // Add space between rows
+                  runSpacing: 20.0,
                   children: [
                     ...categories.skip(1).map((category) => CategoryItemLarge(
                           title: category.title,
                           image: 'assets/categories/${category.title}.jpg',
                           onTap: () {
-                            // Implement navigation to the vendors screen if needed
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CategoryVendorsScreen(
+                                  categoryName: category.title,
+                                ),
+                              ),
+                            );
                           },
                         )),
                   ],

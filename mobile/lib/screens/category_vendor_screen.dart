@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:mobile/services/data_service.dart'; // Ensure this import is correct
-import 'package:mobile/providers/data_provider.dart'; // Ensure this import is correct
-import 'package:mobile/utilities/configure.dart'; // Ensure this import is correct
+import 'package:mobile/services/data_service.dart';
+import 'package:mobile/providers/data_provider.dart';
+import 'package:mobile/utilities/configure.dart';
 
 class CategoryVendorsScreen extends StatelessWidget {
   final String categoryName;
@@ -61,12 +61,11 @@ class CategoryVendorsScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final vendor = category.vendors[index];
                       return Container(
-                        margin: const EdgeInsets.only(
-                            bottom: 16.0), // Add bottom margin
+                        margin: const EdgeInsets.only(bottom: 13.0),
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: Colors.grey.shade300, // Set border color
+                              color: Colors.grey.shade300,
                               width: 1.0, // Set border width
                             ),
                           ),
