@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/vendor_detail_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/data_service.dart';
@@ -102,22 +103,34 @@ class _CategoryVendorsScreenState extends State<CategoryVendorsScreen> {
                             ),
                           ),
                         ),
-                        child: ListTile(
-                          leading: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                      '$IMAGE_BASE_URL${vendor.logo}'),
-                                  fit: BoxFit.cover,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VendorDetailsScreen(
+                                  vendor: vendor,
+                                ),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            leading: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                        '$IMAGE_BASE_URL${vendor.logo}'),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
+                            title: Text(vendor.name),
                           ),
-                          title: Text(vendor.name),
                         ),
                       );
                     },
