@@ -1,7 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/widgets/custom_navigation_bar.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
+
+  @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  int _selectedIndex = 3;
+
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/search');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/help');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/order');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/account');
+        break;
+      default:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +48,7 @@ class OrdersScreen extends StatelessWidget {
             indicatorColor: Colors.teal,
             labelColor: Colors.black,
             tabs: [
-              Tab(
-                text: 'Pending orders',
-              ),
+              Tab(text: 'Pending orders'),
               Tab(text: 'Past orders'),
             ],
           ),
@@ -33,6 +64,10 @@ class OrdersScreen extends StatelessWidget {
               message: 'Looks like you have no past orders.',
             ),
           ],
+        ),
+        bottomNavigationBar: CustomNavigationBar(
+          currentIndex: _selectedIndex,
+          onItemSelected: _onItemSelected,
         ),
       ),
     );
