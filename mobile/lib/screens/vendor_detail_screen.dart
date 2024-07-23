@@ -65,6 +65,19 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
               ),
             ),
           ),
+          Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 1.0,
+                  ),
+                ),
+              )),
+          const SizedBox(
+            height: 5,
+          ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(

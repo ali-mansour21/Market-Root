@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/screens/all_categories_screen.dart';
 import 'package:mobile/screens/category_vendor_screen.dart';
+import 'package:mobile/screens/vendor_detail_screen.dart';
 import 'package:mobile/services/data_service.dart';
 import 'package:mobile/utilities/configure.dart';
 import 'package:mobile/widgets/category_item.dart';
@@ -239,7 +240,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const AllCategoriesScreen(),
+                                builder: (context) =>
+                                    const AllCategoriesScreen(),
                               ),
                             );
                           },
@@ -249,25 +251,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 50),
                   // Market Section
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Now in Market Root!',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'View All',
-                            style: TextStyle(color: Colors.teal),
-                          ),
-                        ),
                       ],
                     ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   SizedBox(
                     height: 150,
@@ -299,16 +297,26 @@ class MarketItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      width: 130,
-      height: 130,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage('$IMAGE_BASE_URL${vendor.logo}'),
-          fit: BoxFit.fill,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VendorDetailsScreen(vendor: vendor),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        width: 130,
+        height: 130,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage('$IMAGE_BASE_URL${vendor.logo}'),
+            fit: BoxFit.fill,
+          ),
+          borderRadius: BorderRadius.circular(8),
         ),
-        borderRadius: BorderRadius.circular(8),
       ),
     );
   }

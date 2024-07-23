@@ -65,6 +65,8 @@ flutter:
     - assets/market-root-logo.png
     - assets/Home.jpg
     - assets/categories/
+    - assets/pending_order.png
+    - assets/past_order.png
     - assets/onboarding/boarding_1.png
     - assets/onboarding/boarding_2.png
     - assets/onboarding/boarding_3.png

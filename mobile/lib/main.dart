@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/screens/all_categories_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/screens/order_screen.dart';
 import 'package:mobile/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomeScreen(),
-        '/search': (context) => const AllCategoriesScreen()
+        '/search': (context) => const AllCategoriesScreen(),
+        '/order': (context) => const OrdersScreen()
       },
       debugShowCheckedModeBanner: false,
     );
