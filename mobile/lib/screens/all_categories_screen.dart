@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile/screens/category_vendor_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/widgets/category_item_large.dart';
 
@@ -14,6 +14,8 @@ class AllCategoriesScreen extends StatefulWidget {
 
 class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   int _selectedIndex = 1;
+  final GlobalKey<CustomNavigationBarState> _navBarKey =
+      GlobalKey<CustomNavigationBarState>();
 
   void _onItemSelected(int index) {
     setState(() {
@@ -46,6 +48,14 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            _navBarKey.currentState?.updateIndex(0);
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
+          },
+        ),
         backgroundColor: Colors.white,
         title: GestureDetector(
           onTap: () => focusNode.requestFocus(),
@@ -103,6 +113,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
         ),
       ),
       bottomNavigationBar: CustomNavigationBar(
+        key: _navBarKey,
         currentIndex: _selectedIndex,
         onItemSelected: _onItemSelected,
       ),

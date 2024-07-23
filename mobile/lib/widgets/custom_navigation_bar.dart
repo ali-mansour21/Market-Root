@@ -11,10 +11,16 @@ class CustomNavigationBar extends StatefulWidget {
   });
 
   @override
-  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
+  State<CustomNavigationBar> createState() => CustomNavigationBarState();
 }
 
-class _CustomNavigationBarState extends State<CustomNavigationBar> {
+class CustomNavigationBarState extends State<CustomNavigationBar> {
+  void updateIndex(int index) {
+    setState(() {
+      widget.onItemSelected(index);
+    });
+  }
+
   void _onItemTapped(int index) {
     widget.onItemSelected(index);
     switch (index) {
