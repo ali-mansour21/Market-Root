@@ -1,13 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/widgets/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/data_service.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/utilities/configure.dart';
 
-class CategoryVendorsScreen extends StatelessWidget {
+class CategoryVendorsScreen extends StatefulWidget {
   final String categoryName;
 
   const CategoryVendorsScreen({super.key, required this.categoryName});
+
+  @override
+  _CategoryVendorsScreenState createState() => _CategoryVendorsScreenState();
+}
+
+class _CategoryVendorsScreenState extends State<CategoryVendorsScreen> {
+  int _selectedIndex = 1;
+
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/help');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/orders');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/account');
+        break;
+      default:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +48,12 @@ class CategoryVendorsScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            _onItemSelected(
+                0); // Set the index to 0 (home) when back is pressed
             Navigator.of(context).pop();
           },
         ),
-        title: Text(categoryName),
+        title: Text(widget.categoryName),
       ),
       body: Consumer<DataProvider>(
         builder: (context, dataProvider, child) {
@@ -28,9 +62,9 @@ class CategoryVendorsScreen extends StatelessWidget {
           }
 
           final category = dataProvider.categories.firstWhere(
-            (category) => category.title == categoryName,
+            (category) => category.title == widget.categoryName,
             orElse: () => Category(
-              title: categoryName,
+              title: widget.categoryName,
               vendors: [],
               categoryId: 0,
               imageName: '',
@@ -52,9 +86,7 @@ class CategoryVendorsScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 Expanded(
                   child: ListView.builder(
                     itemCount: category.vendors.length,
@@ -66,7 +98,7 @@ class CategoryVendorsScreen extends StatelessWidget {
                           border: Border(
                             bottom: BorderSide(
                               color: Colors.grey.shade300,
-                              width: 1.0, // Set border width
+                              width: 1.0,
                             ),
                           ),
                         ),
@@ -95,6 +127,10 @@ class CategoryVendorsScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+      bottomNavigationBar: CustomNavigationBar(
+        currentIndex: _selectedIndex,
+        onItemSelected: _onItemSelected,
       ),
     );
   }
