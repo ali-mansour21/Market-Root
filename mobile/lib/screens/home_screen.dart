@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/screens/all_categories_screen.dart';
+import 'package:mobile/screens/category_vendor_screen.dart';
 import 'package:mobile/services/data_service.dart';
 import 'package:mobile/utilities/configure.dart';
 import 'package:mobile/widgets/category_item.dart';
@@ -224,8 +225,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => VendorsScreen(
-                                        categoryId: category.categoryId),
+                                    builder: (context) => CategoryVendorsScreen(
+                                      categoryName: category.title,
+                                    ),
                                   ),
                                 );
                               },
@@ -303,29 +305,10 @@ class MarketItem extends StatelessWidget {
       height: 130,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(
-              '$IMAGE_BASE_URL${vendor.logo}'), // Assuming you have the logos in assets/vendors
+          image: NetworkImage('$IMAGE_BASE_URL${vendor.logo}'),
           fit: BoxFit.fill,
         ),
         borderRadius: BorderRadius.circular(8),
-      ),
-    );
-  }
-}
-
-class VendorsScreen extends StatelessWidget {
-  final int categoryId;
-
-  const VendorsScreen({super.key, required this.categoryId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vendors'),
-      ),
-      body: Center(
-        child: Text('Vendors for category $categoryId'),
       ),
     );
   }
