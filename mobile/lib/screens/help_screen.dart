@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/buy_something_screen.dart';
+import 'package:mobile/screens/consult_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 
 class HelpScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _HelpScreenState extends State<HelpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(top: 40),
         child: ListView(
@@ -52,7 +54,13 @@ class _HelpScreenState extends State<HelpScreen> {
               subtitle: const Text(
                   "Ask AI for some ideas, ask for what you need, the image"),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ConsultAIScreen()),
+                );
+              },
             ),
           ],
         ),
