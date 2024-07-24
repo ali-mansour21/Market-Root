@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/account_creation_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -56,7 +57,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(
                         width: 155,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AccountCreationScreen(),
+                                ));
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.teal,
                           ),
