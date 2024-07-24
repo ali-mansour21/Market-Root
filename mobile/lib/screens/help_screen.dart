@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/buy_something_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
 
 class HelpScreen extends StatefulWidget {
@@ -34,7 +35,13 @@ class _HelpScreenState extends State<HelpScreen> {
                 maxLines: 4,
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BuySomethingScreen()),
+                );
+              },
             ),
             const Divider(),
             ListTile(
