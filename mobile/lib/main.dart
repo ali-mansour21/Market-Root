@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
 import 'package:mobile/screens/all_categories_screen.dart';
+import 'package:mobile/screens/help_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
 import 'package:mobile/screens/order_screen.dart';
 import 'package:mobile/screens/splash_screen.dart';
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomeScreen(),
         '/search': (context) => const AllCategoriesScreen(),
-        '/order': (context) => const OrdersScreen()
+        '/order': (context) => const OrdersScreen(),
+        '/help': (context) => const HelpScreen()
       },
       debugShowCheckedModeBanner: false,
     );

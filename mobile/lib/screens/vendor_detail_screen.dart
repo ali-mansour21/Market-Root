@@ -29,7 +29,7 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
         Navigator.pushNamed(context, '/help');
         break;
       case 3:
-        Navigator.pushNamed(context, '/orders');
+        Navigator.pushNamed(context, '/order');
         break;
       case 4:
         Navigator.pushNamed(context, '/account');
