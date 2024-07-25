@@ -32,6 +32,6 @@ class HomeController extends Controller
             Cache::put($cacheKey, $vendor, 60);
         }
 
-        return response()->json(['data' => $vendor]);
+        return response()->json(['status' => 'success', 'data' => $vendor]);
     }
 }
