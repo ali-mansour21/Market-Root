@@ -4,6 +4,7 @@ namespace App\Http\Controllers\customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserAdress;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -27,6 +28,11 @@ class CustomerController extends Controller
         $user->phone_number = $request->phone_number;
         $user->dbtype = 'customer';
         $user->save();
+        UserAdress::create([
+            'user_id' => $user->id,
+            'city' => $data['city'],
+            'street' => $data['street']
+        ]);
         return response()->json(['message' => 'User created successfully'], 201);
     }
     public function vendor(Request $request)
