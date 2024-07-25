@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserAdress;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
@@ -33,7 +34,42 @@ class CustomerController extends Controller
             'city' => $data['city'],
             'street' => $data['street']
         ]);
-        return response()->json(['message' => 'User created successfully'], 201);
+        $token = Auth::login($user);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User created successfully',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
+    }
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+        $credentials = $request->only('email', 'password');
+
+        $token = Auth::attempt($credentials);
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = Auth::user();
+        return response()->json([
+            'status' => 'success',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+                'type' => 'bearer',
+            ]
+        ]);
     }
     public function vendor(Request $request)
     {
