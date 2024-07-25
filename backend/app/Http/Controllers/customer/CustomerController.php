@@ -16,14 +16,16 @@ class CustomerController extends Controller
             'username' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users', 'dbemail')],
             'password' => ['required', 'min:6', 'max:16'],
-            'phone_number' => ['required', 'digits:8']
+            'phone_number' => ['required', 'digits:8'],
+            'city' => ['required', 'string'],
+            'street' => ['required', 'string']
         ]);
         $user = new User();
         $user->username = $data['username'];
         $user->dbemail = $data['email'];
         $user->dbpassword =  password_hash($data['password'], PASSWORD_DEFAULT);
         $user->phone_number = $request->phone_number;
-        $user->dbtype = 'vendor';
+        $user->dbtype = 'customer';
         $user->save();
         return response()->json(['message' => 'User created successfully'], 201);
     }

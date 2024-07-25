@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/vendor_detail_screen.dart';
 import 'package:mobile/services/data_service.dart';
 import 'package:mobile/utilities/configure.dart';
 import 'package:provider/provider.dart';
@@ -62,14 +63,15 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
 
   Future<List<dynamic>> _performSearch(String query) async {
     final response = await http.post(
-      Uri.parse('$API_BASE_URL/home/search'), // Replace with your API URL
+      Uri.parse('$API_BASE_URL/home/search'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'name': query}),
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
-      return jsonDecode(response.body);
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse[
+          'data']; // Assuming 'data' key holds the list of vendors
     } else {
       throw Exception('Failed to load search results');
     }
@@ -138,11 +140,13 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                   future: _searchResults,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.teal,
+                        ),
+                      );
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('No results found.'));
+                      return _buildNoResults();
                     } else {
                       return _buildSearchResults(snapshot.data!);
                     }
@@ -190,22 +194,95 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
 
   Widget _buildSearchResults(List<dynamic> results) {
     return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: results.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(results[index]['name']),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CategoryVendorsScreen(
-                  categoryName: results[index]['name'],
+        final result = results[index];
+        return Column(
+          children: [
+            ListTile(
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VendorDetailsScreen(
+                        vendor: Vendor.fromJson(result),
+                      ),
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image:
+                            NetworkImage('$IMAGE_BASE_URL/${result['logo']}'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            );
-          },
+              title: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VendorDetailsScreen(
+                        vendor: Vendor.fromJson(result),
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  result['name'],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            if (index != results.length - 1) const Divider(),
+          ],
         );
       },
+    );
+  }
+
+  Widget _buildNoResults() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Oh no!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "We couldn't find anything for your search.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Try searching another key word.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
