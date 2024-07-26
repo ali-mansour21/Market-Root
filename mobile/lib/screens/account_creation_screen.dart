@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile/utilities/configure.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountCreationScreen extends StatefulWidget {
   const AccountCreationScreen({super.key});
@@ -11,6 +15,42 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _termsAccepted = false;
   bool _privacyAccepted = false;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
+
+  Future<void> _createAccount() async {
+    if (!_formKey.currentState!.validate()) return;
+    if (!_termsAccepted || !_privacyAccepted) return;
+
+    final response = await http.post(Uri.parse('$API_BASE_URL/user'), body: {
+      'username': _usernameController.text,
+      'email': _emailController.text,
+      'password': _passwordController.text,
+      'phone_number': _phoneNumberController.text,
+      'city': _cityController.text,
+      'street': _streetController.text,
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final token = data['authorization']['token'];
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Account created successfully!')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to create account.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +75,11 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
           child: ListView(
             children: [
               const Text(
-                'We just need a few details from you to set up your account.',
-                style: TextStyle(fontSize: 16),
-              ),
+                  'We just need a few details from you to set up your account.',
+                  style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
               TextFormField(
+                controller: _usernameController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Username',
@@ -56,6 +96,7 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                 },
               ),
               TextFormField(
+                controller: _emailController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Email address',
@@ -72,6 +113,7 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                 },
               ),
               TextFormField(
+                controller: _passwordController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Password',
@@ -89,6 +131,7 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                 },
               ),
               TextFormField(
+                controller: _phoneNumberController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Phone number',
@@ -105,6 +148,7 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                 },
               ),
               TextFormField(
+                controller: _cityController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'City',
@@ -121,6 +165,7 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                 },
               ),
               TextFormField(
+                controller: _streetController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Street',
@@ -183,10 +228,11 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
                       // Open privacy policy
                     },
                     child: const Text(
-                        'I have read and agree to the Privacy policy',
-                        style: TextStyle(
-                          color: Colors.teal,
-                        )),
+                      'I have read and agree to the Privacy policy',
+                      style: TextStyle(
+                        color: Colors.teal,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -194,7 +240,9 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _termsAccepted && _privacyAccepted
+                      ? _createAccount
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _termsAccepted && _privacyAccepted
                         ? Colors.teal

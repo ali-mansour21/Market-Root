@@ -18,7 +18,7 @@ class CustomerController extends Controller
             'username' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users', 'dbemail')],
             'password' => ['required', 'min:6', 'max:16'],
-            'phone_number' => ['required', 'digits:8'],
+            'phone_number' => ['required'],
             'city' => ['required', 'string'],
             'street' => ['required', 'string']
         ]);
@@ -32,14 +32,14 @@ class CustomerController extends Controller
         UserAdress::create([
             'user_id' => $user->id,
             'city' => $data['city'],
-            'street' => $data['street']
+            'street' => $data['street'],
         ]);
         $token = Auth::login($user);
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
             'user' => $user,
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]

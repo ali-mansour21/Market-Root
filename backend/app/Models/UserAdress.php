@@ -10,4 +10,5 @@ class UserAdress extends Model
     use HasFactory;
     protected $table = "addresses";
     protected $fillable = ['user_id', 'street', 'city'];
+    protected $timestamp = false;
 }
