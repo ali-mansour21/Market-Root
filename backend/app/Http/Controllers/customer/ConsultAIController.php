@@ -22,12 +22,12 @@ class ConsultAIController extends Controller
         $request->validate([
             'question' => 'required|string',
         ]);
-
-        $question = $request->input('question');
+      $question = $request->input('question');
         $categories = Category::with('vendors.products')->get();
         // Generate the answer using the AI service
         $answer = $this->aiService->generateAnswer($question, $categories);
 
         return response()->json(['status' => 'success', 'answer' => $answer]);
     }
+  
 }
