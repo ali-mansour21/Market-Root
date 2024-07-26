@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('user', [CustomerController::class, 'index']);
+Route::post('login-user', [CustomerController::class, 'login']);
 Route::post('vendor', [CustomerController::class, 'vendor']);
 Route::post('product', [ProdcutController::class, 'index']);
 Route::get('home', [HomeController::class, 'index']);
-Route::post('home/search',[HomeController::class, 'searchVendorByName']);
+Route::post('home/search', [HomeController::class, 'searchVendorByName']);
