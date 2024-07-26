@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\customer\ConsultAIController;
 use App\Http\Controllers\customer\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProdcutController;
@@ -23,3 +24,4 @@ Route::post('vendor', [CustomerController::class, 'vendor']);
 Route::post('product', [ProdcutController::class, 'index']);
 Route::get('home', [HomeController::class, 'index']);
 Route::post('home/search', [HomeController::class, 'searchVendorByName']);
+Route::post('ask_ai', [ConsultAIController::class, 'consult']);

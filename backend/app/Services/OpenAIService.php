@@ -23,11 +23,15 @@ class OpenAIService
      * @param string $question The user's question.
      * @return string The answer from OpenAI.
      */
-    public function generateAnswer($context, $question)
+    public function generateAnswer($question, $categories)
     {
         $messages = [];
-        if (!empty($context)) {
-            $messages[] = ['role' => 'system', 'content' => $context];
+
+        // Create a dataset context from categories
+        $datasetContext = $this->createDatasetContext($categories);
+
+        if (!empty($datasetContext)) {
+            $messages[] = ['role' => 'system', 'content' => $datasetContext];
         }
 
         $messages[] = ['role' => 'user', 'content' => $question];
@@ -38,5 +42,30 @@ class OpenAIService
         ]);
 
         return $response->choices[0]->message->content;
+    }
+
+    private function createDatasetContext($categories)
+    {
+        $datasetContext = "Here is the list of available categories, shops, and products:\n";
+
+        foreach ($categories as $category) {
+            $datasetContext .= "Category: {$category['title']}\n";
+            if (!empty($category['vendors'])) {
+                foreach ($category['vendors'] as $vendor) {
+                    $datasetContext .= "  Shop: {$vendor['name']}\n";
+                    if (!empty($vendor['products'])) {
+                        // Convert the products collection to an array
+                        $productsArray = $vendor['products']->toArray();
+                        $datasetContext .= "    Products: " . implode(', ', array_column($productsArray, 'name')) . "\n";
+                    } else {
+                        $datasetContext .= "    Products: No products available\n";
+                    }
+                }
+            } else {
+                $datasetContext .= "  Vendors: No vendors available\n";
+            }
+        }
+
+        return $datasetContext;
     }
 }
