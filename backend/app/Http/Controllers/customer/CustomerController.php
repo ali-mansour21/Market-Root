@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\User;
 use App\Models\UserAdress;
 use App\Models\Vendor;
@@ -13,6 +15,39 @@ use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
+    public function createOrder(Request $request)
+    {
+        $request->validate([
+            'vendor_id' => 'required|exists:vendors,id',
+            'user_id' => 'required|exists:users,id',
+            'total_price' => 'required|numeric',
+            'order_items' => 'required|array',
+            'order_items.*.product_id' => 'required|exists:products,id',
+            'order_items.*.price' => 'required|numeric',
+            'order_items.*.quantity' => 'required|integer'
+        ]);
+
+        $order = Order::create([
+            'vendor_id' => $request->vendor_id,
+            'user_id' => $request->user_id,
+            'total_price' => $request->total_price,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        foreach ($request->order_items as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['product_id'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return response()->json(['message' => 'Order created successfully!'], 201);
+    }
     public function index(Request $request)
     {
         $data = $request->validate([
@@ -63,35 +98,11 @@ class CustomerController extends Controller
         // $user = Auth::user();
         return response()->json([
             'status' => 'success',
-            
+
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
         ], 200);
-    }
-    public function vendor(Request $request)
-    {
-        $data = $request->validate([
-            'category_id' => ['required', Rule::exists('categories', 'category_id')],
-            'user_id' => ['required', Rule::exists('users', 'user_id')],
-            'name' => ['required', 'string'],
-            'logo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048']
-        ]);
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $logoName = time() . '_' . $logo->getClientOriginalName();
-            $logoPath = $logo->storeAs('vendor/logos', $logoName, 'public');
-        }
-        $shop = new Vendor([
-            'category_id' => $data['category_id'],
-            'user_id' => $data['user_id'],
-            'name' => $data['name'],
-            'logo' => $logoPath,
-            'Status' => 'accepted'
-        ]);
-
-        $shop->save();
-        return response()->json(['message' => 'Vendor created successfully'], 201);
     }
 }
