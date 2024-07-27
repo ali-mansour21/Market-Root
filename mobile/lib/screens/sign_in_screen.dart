@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile/utilities/configure.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -9,6 +13,38 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _signIn() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final response = await http.post(
+      Uri.parse('$API_BASE_URL/login-user'),
+      body: {
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final token = data['authorisation']['token'];
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signed in successfully!')),
+      );
+
+      Navigator.pop(context); // Navigate back to the previous screen
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to sign in.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
           child: ListView(
             children: [
               TextFormField(
+                controller: _emailController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Email address',
@@ -48,6 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 },
               ),
               TextFormField(
+                controller: _passwordController,
                 cursorColor: Colors.teal,
                 decoration: const InputDecoration(
                   labelText: 'Password',
@@ -68,7 +106,7 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _signIn,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
                   ),

@@ -26,14 +26,17 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (!_termsAccepted || !_privacyAccepted) return;
 
-    final response = await http.post(Uri.parse('$API_BASE_URL/user'), body: {
-      'username': _usernameController.text,
-      'email': _emailController.text,
-      'password': _passwordController.text,
-      'phone_number': _phoneNumberController.text,
-      'city': _cityController.text,
-      'street': _streetController.text,
-    });
+    final response = await http.post(
+      Uri.parse('$API_BASE_URL/user'),
+      body: {
+        'username': _usernameController.text,
+        'email': _emailController.text,
+        'password': _passwordController.text,
+        'phone_number': _phoneNumberController.text,
+        'city': _cityController.text,
+        'street': _streetController.text,
+      },
+    );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -45,6 +48,9 @@ class _AccountCreationScreenState extends State<AccountCreationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account created successfully!')),
       );
+
+      Navigator.pop(
+          context); // This will pop the current screen and go back to the previous screen
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to create account.')),

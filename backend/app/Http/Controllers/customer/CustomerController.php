@@ -8,6 +8,7 @@ use App\Models\UserAdress;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
@@ -24,8 +25,8 @@ class CustomerController extends Controller
         ]);
         $user = new User();
         $user->username = $data['username'];
-        $user->dbemail = $data['email'];
-        $user->dbpassword =  password_hash($data['password'], PASSWORD_DEFAULT);
+        $user->email = $data['email'];
+        $user->password =  password_hash($data['password'], PASSWORD_DEFAULT);
         $user->phone_number = $request->phone_number;
         $user->dbtype = 'customer';
         $user->save();
@@ -47,11 +48,10 @@ class CustomerController extends Controller
     }
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
-        $credentials = $request->only('email', 'password');
 
         $token = Auth::attempt($credentials);
         if (!$token) {
@@ -60,16 +60,15 @@ class CustomerController extends Controller
                 'message' => 'Unauthorized',
             ], 401);
         }
-
-        $user = Auth::user();
+        // $user = Auth::user();
         return response()->json([
             'status' => 'success',
-            'user' => $user,
-            'authorisation' => [
+            
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
-        ]);
+        ], 200);
     }
     public function vendor(Request $request)
     {

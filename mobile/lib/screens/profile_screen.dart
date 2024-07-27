@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/screens/account_creation_screen.dart';
 import 'package:mobile/screens/sign_in_screen.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +13,28 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   int currentIndex = 4;
+  String? _token;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+  }
+
+  void _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('token');
+    });
+  }
+
+  void _signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    setState(() {
+      _token = null;
+    });
+  }
 
   void onItemSelected(int index) {
     setState(() {
@@ -37,52 +60,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: 130,
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 155,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SignInScreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            side: const BorderSide(color: Colors.teal),
-                          ),
-                          child: const Text(
-                            'Sign In',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 155,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AccountCreationScreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                          ),
-                          child: const Text(
-                            'Create Account',
-                            style: TextStyle(color: Colors.white),
+                  if (_token == null) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 155,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignInScreen(),
+                                  ));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              side: const BorderSide(color: Colors.teal),
+                            ),
+                            child: const Text(
+                              'Sign In',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 155,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AccountCreationScreen(),
+                                  ));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                            ),
+                            child: const Text(
+                              'Create Account',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ]
                 ],
               ),
             ),
@@ -111,6 +136,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onTap: () {},
             ),
             const Divider(),
+            if (_token != null) ...[
+              ListTile(
+                title: const Text('Sign out'),
+                trailing: const Icon(Icons.logout, size: 14),
+                onTap: _signOut,
+              ),
+              const Divider(),
+            ],
           ],
         ),
       ),
