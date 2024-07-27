@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
+import 'package:mobile/providers/orders_provider.dart';
 import 'package:mobile/screens/account_creation_screen.dart';
 import 'package:mobile/screens/all_categories_screen.dart';
 import 'package:mobile/screens/help_screen.dart';
@@ -13,6 +14,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => DataProvider()),
+      ChangeNotifierProvider(create: (context) => OrdersProvider()),
     ],
     child: const MyApp(),
   ));
