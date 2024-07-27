@@ -15,22 +15,22 @@ use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
-    public function createOrder(Request $request)
+    public function create_order(Request $request)
     {
         $request->validate([
             'vendor_id' => 'required|exists:vendors,id',
-            'user_id' => 'required|exists:users,id',
             'total_price' => 'required|numeric',
             'order_items' => 'required|array',
             'order_items.*.product_id' => 'required|exists:products,id',
             'order_items.*.price' => 'required|numeric',
             'order_items.*.quantity' => 'required|integer'
         ]);
-
+        $user_id = auth()->id();
         $order = Order::create([
             'vendor_id' => $request->vendor_id,
-            'user_id' => $request->user_id,
+            'user_id' => $user_id,
             'total_price' => $request->total_price,
+            'status' => 'pending',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -60,8 +60,8 @@ class CustomerController extends Controller
         ]);
         $user = new User();
         $user->username = $data['username'];
-        $user->email = $data['email'];
-        $user->password =  password_hash($data['password'], PASSWORD_DEFAULT);
+        $user->dbemail = $data['email'];
+        $user->dbpassword =  password_hash($data['password'], PASSWORD_DEFAULT);
         $user->phone_number = $request->phone_number;
         $user->dbtype = 'customer';
         $user->save();
