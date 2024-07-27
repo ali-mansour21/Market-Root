@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
@@ -18,10 +19,10 @@ class CustomerController extends Controller
     public function create_order(Request $request)
     {
         $request->validate([
-            'vendor_id' => 'required|exists:vendors,id',
+            'vendor_id' => 'required|exists:vendors,vendor_id',
             'total_price' => 'required|numeric',
             'order_items' => 'required|array',
-            'order_items.*.product_id' => 'required|exists:products,id',
+            'order_items.*.product_id' => 'required|exists:products,product_id',
             'order_items.*.price' => 'required|numeric',
             'order_items.*.quantity' => 'required|integer'
         ]);
@@ -65,11 +66,17 @@ class CustomerController extends Controller
         $user->phone_number = $request->phone_number;
         $user->dbtype = 'customer';
         $user->save();
-        UserAdress::create([
-            'user_id' => $user->id,
-            'city' => $data['city'],
-            'street' => $data['street'],
-        ]);
+        try {
+            UserAdress::create([
+                'user_id' => $user->id,
+                'city' => $data['city'],
+                'street' => $data['street'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error creating user address: ' . $e->getMessage());
+        }
         $token = Auth::login($user);
         return response()->json([
             'status' => 'success',

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mobile/services/data_service.dart';
 import 'package:mobile/utilities/configure.dart';
 import 'package:mobile/widgets/custom_navigation_bar.dart';
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VendorDetailsScreen extends StatefulWidget {
   final Vendor vendor;
@@ -39,6 +42,101 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
         break;
       default:
         break;
+    }
+  }
+
+  Future<void> placeOrder(BuildContext context, int vendorId, double totalPrice,
+      Map<Product, int> selectedProducts) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      Fluttertoast.showToast(
+        msg: "Please log in to complete your order",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.orange,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      // Navigate to login/signup screen
+      final result = await Navigator.pushNamed(context, '/createAccount');
+      if (result == true) {
+        // Try to get the token again after successful login/signup
+        token = prefs.getString('token');
+        if (token == null) {
+          Fluttertoast.showToast(
+            msg: "Authentication failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          return;
+        }
+      } else {
+        return; // User did not log in or sign up
+      }
+    }
+
+    try {
+      List<Map<String, dynamic>> orderItems =
+          selectedProducts.entries.map((entry) {
+        return {
+          'product_id': entry
+              .key.productId, // Assuming the Product model has an 'id' field
+          'price': double.parse(entry.key
+              .price), // Assuming the price is a string and needs to be parsed
+          'quantity': entry.value,
+        };
+      }).toList();
+
+      Map<String, dynamic> orderData = {
+        'vendor_id': vendorId,
+        'total_price': totalPrice,
+        'order_items': orderItems,
+      };
+      print(orderData);
+      final response = await http.post(
+        Uri.parse('$API_BASE_URL/order'), // Replace with your API endpoint
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(orderData),
+      );
+
+      if (response.statusCode == 201) {
+        Fluttertoast.showToast(
+          msg: "Order created successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } else {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        Fluttertoast.showToast(
+          msg: responseData['message'] ?? 'Failed to create order',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "An error occurred",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 
@@ -180,7 +278,10 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          placeOrder(context, widget.vendor.vendorId,
+                              _calculateTotalPrice(), _selectedProducts);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.teal,
                         ),

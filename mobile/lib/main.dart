@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/providers/data_provider.dart';
+import 'package:mobile/screens/account_creation_screen.dart';
 import 'package:mobile/screens/all_categories_screen.dart';
 import 'package:mobile/screens/help_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
         '/search': (context) => const AllCategoriesScreen(),
         '/order': (context) => const OrdersScreen(),
         '/help': (context) => const HelpScreen(),
-        '/account': (context) => const ProfileScreen()
+        '/account': (context) => const ProfileScreen(),
+        '/createAccount': (context) => const AccountCreationScreen()
       },
       debugShowCheckedModeBanner: false,
     );

@@ -26,5 +26,5 @@ Route::get('home', [HomeController::class, 'index']);
 Route::post('home/search', [HomeController::class, 'searchVendorByName']);
 Route::post('ask_ai', [ConsultAIController::class, 'consult']);
 Route::middleware('jwt.auth')->group(function () {
-    Route::post('order', [CustomerController::class], 'create_order');
+    Route::post('order', [CustomerController::class, 'create_order']);
 });

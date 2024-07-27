@@ -10,5 +10,8 @@ class UserAdress extends Model
     use HasFactory;
     protected $table = "addresses";
     protected $fillable = ['user_id', 'street', 'city'];
-    protected $timestamp = false;
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
