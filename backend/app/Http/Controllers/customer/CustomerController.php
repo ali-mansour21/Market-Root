@@ -16,6 +16,29 @@ use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
+    public function get_orders()
+    {
+        $user_id = auth()->id();
+
+        // Retrieve orders with order items and vendor relationships
+        $orders = Order::where('user_id', $user_id)
+            ->with('order_items', 'vendor')
+            ->get();
+
+        // Group orders by status
+        $pending_orders = $orders->where('status', 'pending');
+        $confirmed_or_canceled_orders = $orders->whereIn('status', ['confirmed', 'canceled']);
+
+        // Prepare the response
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'pending_orders' => $pending_orders,
+                'confirmed_or_canceled_orders' => $confirmed_or_canceled_orders,
+            ]
+        ]);
+    }
+
     public function create_order(Request $request)
     {
         $request->validate([
