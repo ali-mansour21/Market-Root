@@ -18,6 +18,8 @@ class VendorDetailsScreen extends StatefulWidget {
 
 class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
   int _selectedIndex = 1;
+  bool _isLoading = false;
+
   bool _isExpanded = false;
   Map<Product, int> _selectedProducts = {};
 
@@ -80,7 +82,9 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
         return; // User did not log in or sign up
       }
     }
-
+    setState(() {
+      _isLoading = true;
+    });
     try {
       List<Map<String, dynamic>> orderItems =
           selectedProducts.entries.map((entry) {
@@ -98,7 +102,6 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
         'total_price': totalPrice,
         'order_items': orderItems,
       };
-      print(orderData);
       final response = await http.post(
         Uri.parse('$API_BASE_URL/order'), // Replace with your API endpoint
         headers: {
@@ -112,11 +115,14 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
         Fluttertoast.showToast(
           msg: "Order created successfully!",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.TOP,
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0,
         );
+        setState(() {
+          _isExpanded = false;
+        });
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         Fluttertoast.showToast(
@@ -137,6 +143,10 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -229,6 +239,16 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
               ),
             ],
           ),
+          if (_isLoading)
+            Positioned(
+              top: 0,
+              child: Container(
+                color: Colors.teal.withOpacity(0.5),
+                child: const LinearProgressIndicator(
+                  color: Colors.teal,
+                ),
+              ),
+            ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
